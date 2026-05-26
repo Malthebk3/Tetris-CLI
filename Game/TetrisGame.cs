@@ -21,6 +21,16 @@ public class TetrisGame
             CurrentPiece.X--;
         else if (input.Right && Board.IsValidPosition(CurrentPiece.Shape, CurrentPiece.X + 1, CurrentPiece.Y))
             CurrentPiece.X++;
+        
+        if (input.Rotate)
+        {
+            var rotated = TetrominoShapes.RotateClockwise(CurrentPiece.Shape);
+
+            if (Board.IsValidPosition(rotated, CurrentPiece.X, CurrentPiece.Y))
+            {
+                CurrentPiece.Shape = rotated;
+            }
+        }
 
         bool canMoveDown = Board.IsValidPosition(CurrentPiece.Shape, CurrentPiece.X, CurrentPiece.Y + 1);
         if (canMoveDown)
