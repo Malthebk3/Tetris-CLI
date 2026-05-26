@@ -9,12 +9,14 @@ public class Program
     public static void Main(string[] args)
     {
         var game = new TetrisGame();
-        var inputHandler = new InputHandler();
+        var input = new InputHandler();
         var renderer = new ConsoleRenderer();
 
         while (true)
         {
-            game.Update();
+            input.Update();
+
+            game.Update(input);
 
             renderer.Draw(game.Board, game.CurrentPiece);
 

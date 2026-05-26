@@ -7,7 +7,14 @@ public class InputHandler
 
     public void Update()
     {
-        Left = Console.KeyAvailable && Console.ReadKey(true).Key == ConsoleKey.LeftArrow;
-        Right = Console.KeyAvailable && Console.ReadKey(true).Key == ConsoleKey.RightArrow;
+        Left = false;
+        Right = false;
+
+        if (Console.KeyAvailable)
+        {
+            var key = Console.ReadKey(true).Key;
+            Left = key == ConsoleKey.LeftArrow;
+            Right = key == ConsoleKey.RightArrow;
+        }
     }
 }

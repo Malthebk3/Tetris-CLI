@@ -33,7 +33,7 @@ public class ConsoleRenderer
 
                 bool isBlock = board.Grid[y, x] == 1;
 
-                Console.Write(isPiece || isBlock ? " 1 " : " 0 ");
+                Console.Write(isPiece || isBlock ? "██" : "  ");
             }
             Console.WriteLine();
         }
