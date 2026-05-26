@@ -1,3 +1,4 @@
+using System.Runtime.CompilerServices;
 using Tetris_CLI.Input;
 
 namespace Tetris_CLI.Game;
@@ -21,7 +22,6 @@ public class TetrisGame
         else if (input.Right && Board.IsValidPosition(CurrentPiece.Shape, CurrentPiece.X + 1, CurrentPiece.Y))
             CurrentPiece.X++;
 
-
         bool canMoveDown = Board.IsValidPosition(CurrentPiece.Shape, CurrentPiece.X, CurrentPiece.Y + 1);
         if (canMoveDown)
         {
@@ -30,6 +30,7 @@ public class TetrisGame
         else
         {
             LockCurrentPiece();
+            Board.ClearFullLines();
             SpawnNewPiece();
         }
     }

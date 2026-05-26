@@ -48,4 +48,49 @@ public class Board
             }
         }
     }
+    public int ClearFullLines()
+    {
+        int linesCleared = 0;
+        int writeRow = Height - 1; // Where the next non-full row will be placed
+
+        // Read from bottom to top
+        for (int readRow = Height - 1; readRow >= 0; readRow--)
+        {
+            // Check if current row is full
+            bool isFull = true;
+            for (int x = 0; x < Width; x++)
+            {
+                if (Grid[readRow, x] == 0)
+                {
+                    isFull = false;
+                    break;
+                }
+            }
+
+            if (!isFull)
+            {
+                // Copy this row down to the writeRow position
+                for (int x = 0; x < Width; x++)
+                {
+                    Grid[writeRow, x] = Grid[readRow, x];
+                }
+                writeRow--; // Move write pointer up
+            }
+            else
+            {
+                linesCleared++; // Row was full, so we skip copying it (effectively clearing it)
+            }
+        }
+
+        // Clear all remaining rows above the last written row
+        for (int y = writeRow; y >= 0; y--)
+        {
+            for (int x = 0; x < Width; x++)
+            {
+                Grid[y, x] = 0;
+            }
+        }
+
+        return linesCleared;
+    }
 }
