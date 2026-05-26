@@ -7,6 +7,8 @@ public class TetrisGame
 {
     public Board Board = new();
     public Tetromino CurrentPiece;
+    public Random _random = new();
+    public bool IsGameOver { get; private set; }
     public TetrisGame()
     {
         CurrentPiece = new Tetromino
@@ -17,6 +19,8 @@ public class TetrisGame
     }
     public void Update(InputHandler input)
     {
+        if (IsGameOver) return; //Stops processing if game ended
+
         if (input.Left && Board.IsValidPosition(CurrentPiece.Shape, CurrentPiece.X - 1, CurrentPiece.Y))
             CurrentPiece.X--;
         else if (input.Right && Board.IsValidPosition(CurrentPiece.Shape, CurrentPiece.X + 1, CurrentPiece.Y))
@@ -53,12 +57,13 @@ public class TetrisGame
         CurrentPiece.X = Board.Width / 2;
         CurrentPiece.Y = 0;
 
-        int[,] newShape =
-        {
-            { 1, 1,},
-            { 1, 1,},
-        };
+        int randomShape = _random.Next(0, 6);
+        TetrominoType type = (TetrominoType)randomShape;
 
-        CurrentPiece.Shape = newShape;
+        CurrentPiece.Shape = TetrominoShapes.GetShape(type);
+        if (!Board.IsValidPosition(CurrentPiece.Shape, CurrentPiece.X, CurrentPiece.Y))
+        {
+            IsGameOver = true;
+        }
     }
 }

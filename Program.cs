@@ -12,6 +12,7 @@ public class Program
         var input = new InputHandler();
         var renderer = new ConsoleRenderer();
 
+        Console.Clear();
         while (true)
         {
             input.Update();
@@ -19,6 +20,11 @@ public class Program
             game.Update(input);
 
             renderer.Draw(game.Board, game.CurrentPiece);
+
+            if (game.IsGameOver)
+            {
+                break;
+            }
 
             Thread.Sleep(500);
         }
