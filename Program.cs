@@ -29,7 +29,7 @@ public class Program
 
             input.Update();
             game.Update(input, deltaTime);
-            renderer.Draw(game.Board, game.CurrentPiece);
+            renderer.Draw(game.Board, game.CurrentPiece, game.NextPiece, game.Score, game.Level);
 
             Thread.Sleep(10);
         }
