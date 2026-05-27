@@ -5,21 +5,22 @@ public class InputHandler
     public bool Left;
     public bool Right;
     public bool Rotate;
-    public bool Down;
+    public bool SoftDrop; //down arrow
+    public bool HardDrop; //spacebar
 
     public void Update()
     {
-        Left = false;
-        Right = false;
-        Rotate = false;
-        Down = false;
+        Left = Right = Rotate = SoftDrop = HardDrop = false;
 
-        if (Console.KeyAvailable)
+        while (Console.KeyAvailable)
         {
             var key = Console.ReadKey(true).Key;
-            Left = key == ConsoleKey.LeftArrow;
-            Right = key == ConsoleKey.RightArrow;
-            Rotate = key == ConsoleKey.UpArrow;
+
+            if (key == ConsoleKey.LeftArrow)    Left = true;
+            if (key == ConsoleKey.RightArrow)   Right = true;
+            if (key == ConsoleKey.UpArrow)      Rotate = true;
+            if (key == ConsoleKey.DownArrow)    SoftDrop = true;
+            if (key == ConsoleKey.Spacebar)     HardDrop = true;
         }
     }
 }

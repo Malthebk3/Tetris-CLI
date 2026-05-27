@@ -9,6 +9,8 @@ public class TetrisGame
     public Tetromino CurrentPiece;
     public Random _random = new();
     public bool IsGameOver { get; private set; }
+    private double _gravityAccumulator = 0;
+    private readonly double _baseDropInterval = 1; //Seconds per drop at level 1
     public TetrisGame()
     {
         CurrentPiece = new Tetromino
@@ -17,15 +19,31 @@ public class TetrisGame
             Y = 0
         };
     }
-    public void Update(InputHandler input)
+    public void Update(InputHandler input, double deltaTime)
     {
         if (IsGameOver) return; //Stops processing if game ended
 
+        if (input.HardDrop)
+        {
+            while (Board.IsValidPosition(CurrentPiece.Shape, CurrentPiece.X, CurrentPiece.Y + 1))
+            {
+                CurrentPiece.Y++;
+            }
+            LockCurrentPiece();
+            Board.ClearFullLines();
+            SpawnNewPiece();
+
+            _gravityAccumulator = 0; //Reset gravity to prevent instant drop after hard drop
+            return; //Early return since we already handled the drop and spawn logic
+        }
+
+        //Left and right movement
         if (input.Left && Board.IsValidPosition(CurrentPiece.Shape, CurrentPiece.X - 1, CurrentPiece.Y))
             CurrentPiece.X--;
-        else if (input.Right && Board.IsValidPosition(CurrentPiece.Shape, CurrentPiece.X + 1, CurrentPiece.Y))
+        if (input.Right && Board.IsValidPosition(CurrentPiece.Shape, CurrentPiece.X + 1, CurrentPiece.Y))
             CurrentPiece.X++;
         
+        //Rotation
         if (input.Rotate)
         {
             var rotated = TetrominoShapes.RotateClockwise(CurrentPiece.Shape);
@@ -35,17 +53,23 @@ public class TetrisGame
                 CurrentPiece.Shape = rotated;
             }
         }
-
-        bool canMoveDown = Board.IsValidPosition(CurrentPiece.Shape, CurrentPiece.X, CurrentPiece.Y + 1);
-        if (canMoveDown)
+        
+        //Gravity and soft drop
+        _gravityAccumulator += deltaTime;
+        double effectiveInterval = input.SoftDrop ? 0.05 : _baseDropInterval;
+        if (_gravityAccumulator >= effectiveInterval)
         {
-            CurrentPiece.Y++;
-        }
-        else
-        {
-            LockCurrentPiece();
-            Board.ClearFullLines();
-            SpawnNewPiece();
+            if (Board.IsValidPosition(CurrentPiece.Shape, CurrentPiece.X, CurrentPiece.Y + 1))
+            {
+                CurrentPiece.Y++;
+            }
+            else
+            {
+                LockCurrentPiece();
+                Board.ClearFullLines();
+                SpawnNewPiece();
+            }
+            _gravityAccumulator -= effectiveInterval; //Reset accumulator but keep overflow for consistent timing
         }
     }
     public void LockCurrentPiece()

@@ -1,4 +1,5 @@
-﻿using Tetris_CLI.Rendering;
+﻿using System.Diagnostics;
+using Tetris_CLI.Rendering;
 using Tetris_CLI.Input;
 using Tetris_CLI.Game;
 
@@ -12,21 +13,25 @@ public class Program
         var input = new InputHandler();
         var renderer = new ConsoleRenderer();
 
+        Console.CursorVisible = false;
+
+        var stopwatch = Stopwatch.StartNew();
+        double lastTime = stopwatch.Elapsed.TotalSeconds;
+
         Console.Clear();
-        while (true)
+        while (!game.IsGameOver)
         {
+            double currentTime = stopwatch.Elapsed.TotalSeconds;
+            double deltaTime = currentTime - lastTime;
+            lastTime = currentTime;
+
+            deltaTime = Math.Min(deltaTime, 0.1); //Cap deltaTime to prevent big jumps
+
             input.Update();
-
-            game.Update(input);
-
+            game.Update(input, deltaTime);
             renderer.Draw(game.Board, game.CurrentPiece);
 
-            if (game.IsGameOver)
-            {
-                break;
-            }
-
-            Thread.Sleep(500);
+            Thread.Sleep(10);
         }
     }
 }
