@@ -40,17 +40,12 @@ public class TetrisGame
 
     public TetrisGame()
     {
-        CurrentPiece = new Tetromino
-        {
-            X = Board.Width / 2,
-            Y = 0
-        };
-        NextPiece = new Tetromino
-        {
-            X = Board.Width / 2,
-            Y = 0,
-            Shape = TetrominoShapes.GetShape((TetrominoType)_random.Next(0, 6))
-        };
+        CurrentPiece = GenerateRandomPiece();
+
+        CurrentPiece.X = Board.Width / 2;
+        CurrentPiece.Y = 0;
+
+        NextPiece = GenerateRandomPiece();
     }
     public void Update(InputHandler input, double deltaTime)
     {
